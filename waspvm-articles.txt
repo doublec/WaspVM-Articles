@@ -1,0 +1,883 @@
+Wasp Lisp Articles
+==================
+Chris Double <chris.double@double.co.nz>
+4th July 2010
+
+Building Wasp Lisp
+------------------
+
+The source for the Wasp Lisp VM is held in a 'bzr' source code
+repository. You can get the source with the command:
+
+[source,bash]
+---------------------
+$ bzr clone lp:waspvm
+---------------------
+
+This retrieves the source into a directory called 'waspvm'. Build by
+running 'make':
+
+[source,bash]
+--------------
+$ cd waspvm
+~waspvm$ make
+--------------
+
+Once built you can run the REPL from the build directory with:
+
+[source,bash]
+------------------
+~waspvm$ make repl
+------------------
+
+Another way to run the REPL is to run the 'wasp' program from the 'mod'
+subdirectory. I recommend using a programing like 'rlwrap' to give
+command line history at the REPL:
+
+[source,bash]
+---------------------------
+~waspvm$ cd mod
+~waspvm/mod$ rlwrap ../wasp
+>> (print "hello")
+hello:: null
+>> 
+---------------------------
+
+Compiling Wasp Lisp Programs
+----------------------------
+
+Wasp Lisp programs can be compiled into an executable. This is done by
+compiling the Wasp Lisp code into a bytecode format. The bytecode is
+then appended to a machine language 'stub' file which is specific to the
+platform the executable will be run on.
+
+The stub is generated as part of the normal 'make' process and is in the
+'stubs' subdirectory. You can copy stub files produced from builds on
+other platforms into the 'stubs' subdirectory to produce executables
+than run on platforms other than the one you are using.
+
+The command to do all this is 'waspc'. It takes up to three options.
+They are:
+
+|============================================================================
+| -exe <dest-path>     | The executable that is created when compiling
+| -platform <platform> | Specifies which OS and architecture to compile
+                         for
+| -stub <stub-path>    | Like -platform but specifies the actual
+                         architecture and platform specific stub file to use.
+|============================================================================
+
+An example of generating a 'hello world' program:
+
+[source,bash]
+--------------
+~$ cat >test.ms
+(define (main)
+  (print "hello world!\n"))
+~$ waspc -exe hello test.ms
+BUILD: test
+BUILD: core/macro
+BUILD: core/config
+BUILD: site/config
+BUILD: core/file
+BUILD: core/module
+BUILD: core/io
+BUILD: core/macro
+BUILD: core/config
+BUILD: site/config
+BUILD: core/file
+BUILD: core/module
+BUILD: core/io
+BUILD: test
+~$ chmod +x hello
+~$ ./hello
+hello world!
+--------------
+
+
+Function Reference
+------------------
+
+A function reference.
+
+Modules
+~~~~~~~
+
+lib/eval
+^^^^^^^^
+IMPORTS: lib/compile, lib/optimize
+EXPORTS: (eval expr)
+         (exec block)
+         (load path)
+         (load-ms path)
+
+lib/clue
+^^^^^^^^^
+IMPORTS: lib/object
+EXPORTS: (clue-db->list db)
+         (clue-db-records clue-db)
+         (clue-record->list record)
+         (clue-records-with-key db key)
+         (clue-records-with-parameter db key value)
+         (clue-union set0 sets ...)
+         (drop-clue records)
+         (find-clue-records db parameters ...)
+         (get-clue-record-parameters record)
+         (get-clue-record-value record key)
+         (list->clue-db data)
+         (list->clue-record db data)
+         (new-clue-db)
+         (new-clue-record db parameters)
+         (set-clue-record-parameter record key value)
+         (set-clue-record-parameters record parameters)
+
+lib/trace
+^^^^^^^^^
+IMPORTS: lib/filter
+EXPORTS: 
+MODULE:  ./lib/object
+IMPORTS: lib/iterate
+EXPORTS: (class-fields (<tag> class))
+         (make-class class-name super-class fields)
+         (make-class-constructor class-name class arg-names)
+         (make-field-accessor class field-name)
+         (make-field-modifier class field-name)
+         object
+
+lib/compile
+^^^^^^^^^^^
+IMPORTS: lib/iterate, lib/module, lib/record
+EXPORTS: (compile program)
+         (make-branch-symbol root)
+         (make-symbol items ...)
+         (reset-branch-index)
+         symbol-starts-withq
+         (waspvm-special-forms)
+
+lib/format-filter
+^^^^^^^^^^^^^^^^^
+IMPORTS: lib/filter
+EXPORTS: 
+
+lib/http-url
+^^^^^^^^^^^^
+IMPORTS: lib/url
+EXPORTS: <http-url>
+         (http-url-arg url arg)
+         (http-url-args http-url)
+         (http-url-frag http-url)
+         (http-url-host http-url)
+         (http-url-path http-url)
+         (http-url-portno http-url)
+         (http-url-user http-url)
+         (http-url? value)
+         (make-http-url user host portno path args frag)
+         (url-auth (<http-url> url))
+         (url-frag (<http-url> url))
+         (url-path (<http-url> url))
+         (url-query (<http-url> url))
+         (url-scheme (<http-url> url))
+
+lib/http-server
+^^^^^^^^^^^^^^^
+IMPORTS: lib/http-url, lib/tcp-server
+EXPORTS: <http-request>
+         (http-request-arg http-request key)
+         (http-request-body http-request)
+         (http-request-cookie http-request key)
+         (http-request-cookies http-request)
+         (http-request-header http-request key)
+         (http-request-headers http-request)
+         (http-request-input http-request)
+         (http-request-method http-request)
+         (http-request-output http-request)
+         (http-request-url http-request)
+         (http-request-version http-request)
+         (http-request? value)
+         (http-response-cookie cookie)
+         (http-response-cookies cookies ...)
+         (http-service http-responder)
+         (read-http-request input)
+         (set-http-request-input! http-request input)
+         (spawn-http-server portno http-responder)
+         (write-http-response port code reason headers body)
+
+lib/package-filter
+^^^^^^^^^^^^^^^^^^
+IMPORTS: lib/filter
+EXPORTS: 
+
+lib/module
+^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (code-dependencies source)
+         (code-exports module)
+         (code-imports module)
+         (core-dependencies)
+
+lib/line-filter
+^^^^^^^^^^^^^^^
+IMPORTS: lib/filter
+EXPORTS: 
+
+lib/copy-filter
+^^^^^^^^^^^^^^^
+IMPORTS: lib/filter
+EXPORTS: 
+
+lib/scud
+^^^^^^^^
+IMPORTS: lib/env, lib/record
+EXPORTS: (scud-print data ...)
+         (set-scud-bg color)
+         (set-scud-colors bg fg)
+         (set-scud-fg color)
+
+lib/eval
+^^^^^^^^
+IMPORTS: lib/compile, lib/optimize
+EXPORTS: (eval expr)
+         (exec block)
+         (load path)
+         (load-ms path)
+
+lib/spawn-connection
+^^^^^^^^^^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (spawn-connection func rest ...)
+
+lib/fuzz-filter
+^^^^^^^^^^^^^^^
+IMPORTS: lib/filter
+EXPORTS: 
+
+lib/test
+^^^^^^^^
+IMPORTS: lib/iterate
+EXPORTS: (disable-spot-tests)
+         (do-r expr fn)
+         (do-s expr fn)
+         (do-t expr fn)
+         (enable-spot-tests)
+         (main ignored ...)
+         (spot-report)
+         spot-s
+         spot-v
+
+lib/socks-client
+^^^^^^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (format-socks4-request auth proto addr portno)
+         (parse-socks4-response str)
+         (tcp-socks4-connect auth socks-addr socks-portno dest-addr dest-portno)
+
+lib/crypto-filter
+^^^^^^^^^^^^^^^^^
+IMPORTS: lib/filter
+EXPORTS: 
+
+lib/build
+^^^^^^^^^
+IMPORTS: lib/compile, lib/eval, lib/optimize, lib/waspc
+EXPORTS: (build-dependencies source)
+         (build-exe platform main)
+         (build-exe-with-stub stub main)
+         (build-module module)
+         (build-modules modules ...)
+         (read-platform-stub platform)
+
+lib/url
+^^^^^^^
+IMPORTS: lib/object
+EXPORTS: (make-url scheme auth path query frag)
+         (register-url-parser key parser)
+         (string->url str (<string> scheme))
+         <url>
+         (url-auth url)
+         (url-frag url)
+         url-parsers
+         (url-path url)
+         (url-query url)
+         url-regex
+         (url-scheme url)
+         (url->string url)
+         (url? value)
+
+lib/shuffle
+^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (shuffle x)
+         (shuffle/list l)
+         (shuffle/vector v)
+
+lib/with-io
+^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (do-with-input new-input func)
+         (do-with-io new-input new-output func)
+         (do-with-output new-output func)
+
+lib/tcp-server
+^^^^^^^^^^^^^^
+IMPORTS: lib/with-io
+EXPORTS: (spawn-tcp-server portno fn rest ...)
+
+lib/filter
+^^^^^^^^^^
+IMPORTS: lib/iterate
+EXPORTS: (error-on-fail message)
+         (input-chain recv filters ...)
+         (output-chain xmit filters ...)
+
+lib/s-filter
+^^^^^^^^^^^^
+IMPORTS: lib/filter, lib/iterate, lib/options
+EXPORTS: 
+
+lib/record
+^^^^^^^^^^
+IMPORTS: lib/object
+EXPORTS: 
+
+lib/http-client
+^^^^^^^^^^^^^^^
+IMPORTS: lib/http-url, lib/object, lib/url
+EXPORTS: (http-get url)
+         (http-post url mime body)
+         (http-response-body http-response)
+         (http-response-code http-response)
+         (http-response-input http-response)
+         (http-response-message http-response)
+         (http-response-output http-response)
+         (http-response? value)
+         (make-http-response code message headers body input output)
+         (read-http-response channel)
+         (send-http-get channel url)
+         (send-http-post channel url mime body)
+
+lib/buffer-input
+^^^^^^^^^^^^^^^^
+IMPORTS: lib/catch
+EXPORTS: (buffer-input source timeout debris)
+         (buffer-input/eoc rest ...)
+         (error-on-close fn)
+
+lib/collate-filter
+^^^^^^^^^^^^^^^^^^
+IMPORTS: lib/buffer-input, lib/filter
+EXPORTS: 
+
+lib/catch
+^^^^^^^^^
+IMPORTS: 
+EXPORTS: 
+
+lib/env
+^^^^^^^
+IMPORTS: lib/iterate
+EXPORTS: env
+         (env-is name val)
+         (get-env name)
+         (has-env name)
+         in-darwin
+         in-macosx
+         in-posix
+         in-win32
+         in-winnt
+         in-x11
+         (locate-cmd name)
+
+lib/socks-server
+^^^^^^^^^^^^^^^^
+IMPORTS: lib/patch, lib/tcp-server, lib/trace
+EXPORTS: (format-socks4-response granted portno addr)
+         (parse-socks4-request str)
+         (spawn-socks4-proxy portno auth-fn conn-fn)
+
+lib/checksum-filter
+^^^^^^^^^^^^^^^^^^^
+IMPORTS: lib/filter
+EXPORTS: 
+
+lib/args-fu
+^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (args-fu head keys tail terms)
+         (head-fu count terms)
+         (key-fu keys terms)
+         (parse-fu head keys tail terms)
+         (tail-fu count terms)
+
+lib/optimize
+^^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (optimize assembly)
+
+lib/options
+^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (option options key default)
+
+lib/waspc
+^^^^^^^^^
+IMPORTS: lib/compile, lib/optimize
+EXPORTS: (waspc module)
+
+lib/patch
+^^^^^^^^^
+IMPORTS: 
+EXPORTS: (patch in out)
+         (patch2 left right)
+         (preface-connection data conn)
+         (preface-input data in)
+
+lib/tag-filter
+^^^^^^^^^^^^^^
+IMPORTS: lib/filter
+EXPORTS: 
+
+lib/bridge
+^^^^^^^^^^
+IMPORTS: lib/object
+EXPORTS: <bridge>
+         (bridge-lanes bridge)
+         (bridge? value)
+         (find-reserved-lane bridge tag)
+         (input (<lane> lane))
+         <lane>
+         (lane-recv lane)
+         (lane-tag lane)
+         (lane-xmit lane)
+         (lane? value)
+         (make-bridge xmit recv)
+         (make-lane bridge)
+         (make-reserved-lane bridge)
+         (output (<lane> lane))
+
+lib/iterate
+^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (all fn arg0 argN ...)
+         (any fn arg0 argN ...)
+         (filter fn seq)
+         (find fn seq)
+         fold
+         (fold-left fn result arg0 argN ...)
+         (fold-right fn result arg0 argN ...)
+         (for-each fn arg0 argN ...)
+         (ifilter fn seq)
+         (imap fn arg0 argN ...)
+         (input-iter input)
+         (integer-range min max)
+         (iter value)
+         (iter->list iter)
+         (join-iters iter0 iterN ...)
+         (list-index fn lst)
+         (list-iter list)
+         (map fn arg0 argN ...)
+         (repeat value count)
+
+lib/repl
+^^^^^^^^
+IMPORTS: lib/compile, lib/eval, lib/optimize, lib/trace
+EXPORTS: (repl)
+
+lib/cons-filter
+^^^^^^^^^^^^^^^
+IMPORTS: lib/filter
+EXPORTS: 
+
+lib/http-file-server
+^^^^^^^^^^^^^^^^^^^^
+IMPORTS: lib/http-server
+EXPORTS: (offer-http-file server path type data)
+         (spawn-http-file-server portno)
+         (withdraw-http-file server path)
+
+lib/import
+^^^^^^^^^^
+IMPORTS: lib/waspc
+EXPORTS: (import path)
+
+waspdoc/c-file
+^^^^^^^^^^^^^^
+IMPORTS: waspdoc/source
+EXPORTS: (waspdoc-scan-c path)
+
+waspdoc/dump
+^^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (dump-waspdoc-source src)
+         (format-defn (<waspdoc-func-defn> defn))
+
+waspdoc/dump-source
+^^^^^^^^^^^^^^^^^^^
+IMPORTS: waspdoc/dump, waspdoc/ms-file
+EXPORTS: (dump-module name)
+         (dump-source path)
+
+waspdoc/base
+^^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (set-waspdoc-root! path)
+         (waspdoc-root)
+
+waspdoc/source
+^^^^^^^^^^^^^^
+IMPORTS: lib/object
+EXPORTS: (add-waspdoc-source-export! source defn)
+         (list-waspdoc-source-exports source)
+         (make-waspdoc-defn source id)
+         (make-waspdoc-func-defn source id formals)
+         (make-waspdoc-source id name imports exports)
+         (make-waspdoc-type-defn source id)
+         (name->id name)
+         (path->id path)
+         <waspdoc-defn>
+         (waspdoc-defn-id waspdoc-func-defn)
+         (waspdoc-defn-source waspdoc-func-defn)
+         (waspdoc-defn? value)
+         <waspdoc-func-defn>
+         (waspdoc-func-defn-formals waspdoc-func-defn)
+         (waspdoc-func-defn? value)
+         <waspdoc-source>
+         (waspdoc-source-exports waspdoc-source)
+         (waspdoc-source-id waspdoc-source)
+         (waspdoc-source-imports waspdoc-source)
+         (waspdoc-source-name waspdoc-source)
+         (waspdoc-source? value)
+         <waspdoc-type-defn>
+         (waspdoc-type-defn? value)
+
+waspdoc/ms-file
+^^^^^^^^^^^^^^^
+IMPORTS: lib/compile, waspdoc/source
+EXPORTS: (waspdoc-ms-path? path)
+         (waspdoc-scan-ms path)
+
+waspdoc/check-source
+^^^^^^^^^^^^^^^^^^^^
+IMPORTS: waspdoc/dump, waspdoc/ms-file, waspdoc/source
+EXPORTS: (check-source)
+         (check-source-export defn)
+         (check-source-exports defns)
+         (check-source-file path)
+         (create-defn-doc-file doc-id defn)
+         (create-func-doc-file doc-id defn)
+         (create-source-doc-file doc-id source)
+         (create-type-doc-file doc-id defn)
+         (defn-doc-id defn)
+         (ensure-defn-doc-file defn)
+         (ensure-source-doc-file source)
+         (find-source-files)
+         (source-doc-id source)
+         wasp-src-dirs
+
+mosref/shell
+^^^^^^^^^^^^
+IMPORTS: lib/catch, mosref/console, mosref/format, mosref/node, mosref/parse
+EXPORTS: (alert rest ...)
+         (bind-mosref-cmd verb usage info impl)
+         (do-mosref-cmd shell terms)
+         (find-mosref-cmd verb)
+         <mosref-cmd>
+         (mosref-cmd-impl mosref-cmd)
+         (mosref-cmd-info mosref-cmd)
+         (mosref-cmd-usage mosref-cmd)
+         mosref-cmdq
+         (mosref-cmds)
+         <mosref-shell>
+         (mosref-shell-console mosref-shell)
+         (mosref-shell-running mosref-shell)
+         mosref-shellq
+         (run-mosref-shell console node)
+         (set-mosref-shell-console! mosref-shell console)
+         (set-mosref-shell-running! mosref-shell running)
+
+mosref/node
+^^^^^^^^^^^
+IMPORTS: lib/args-fu, lib/bridge, lib/filter, lib/object, lib/package-filter, lib/with-io, mosref/format
+EXPORTS: (clear-node-prop! node key)
+         <console-node>
+         (console-node? value)
+         <drone-node>
+         (drone-node-bridge drone-node)
+         (drone-node-ecdh drone-node)
+         (drone-node-link drone-node)
+         (drone-node-sin drone-node)
+         (drone-node? value)
+         (expect-data recv)
+         (expect-signal recv)
+         (expect-succ recv)
+         (find-drone-by-bridge bridge)
+         (find-mosref-node id)
+         (find-node-prop node key)
+         (format-propval key src)
+         (has-node-prop? node key)
+         (list-mosref-nodes)
+         (list-node-props node)
+         (make-console-node addr portno)
+         (make-drone-node id link sin ecdh)
+         <node>
+         (node-id drone-node)
+         (node? value)
+         (register-prop key alts help valid fmt)
+         (resolve-key alt)
+         (set-node-bridge! node bridge)
+         (set-node-prop! node key val)
+         (spawn-node-program (<drone-node> node) program)
+         (validate-prop key src)
+
+mosref/transport
+^^^^^^^^^^^^^^^^
+IMPORTS: lib/bridge, lib/buffer-input, lib/patch, lib/trace, lib/with-io
+EXPORTS: (decrypt keystr plaintext)
+         (encrypt keystr plaintext)
+         find-public-key
+         find-shared-secret
+         (make-iv)
+         (make-mosref-recv extra recv recv-key recv-iv)
+         (make-mosref-xmit xmit xmit-key xmit-iv)
+         (make-private-key)
+         (spawn-endpoint endpoint break xmit recv)
+
+mosref/props
+^^^^^^^^^^^^
+IMPORTS: mosref/prop/address, mosref/prop/online, mosref/prop/platform, mosref/prop/port
+EXPORTS: 
+
+mosref/drone
+^^^^^^^^^^^^
+IMPORTS: lib/buffer-input, lib/crypto-filter, lib/iterate, lib/package-filter, lib/tag-filter, lib/with-io, mosref/transport
+EXPORTS: (drone-affiliation console-public xmit recv)
+         drone-bridge
+         (drone-broken bridge)
+         (drone-endpoint bridge)
+
+mosref/cmd/set
+^^^^^^^^^^^^^^
+IMPORTS: mosref/node, mosref/props, mosref/shell
+EXPORTS: (format-property key-val)
+         (parse-property key-val)
+
+mosref/cmd/clear
+^^^^^^^^^^^^^^^^
+IMPORTS: mosref/node, mosref/shell
+EXPORTS: 
+
+mosref/cmd/nodes
+^^^^^^^^^^^^^^^^
+IMPORTS: mosref/node, mosref/shell
+EXPORTS: 
+
+mosref/cmd/drone
+^^^^^^^^^^^^^^^^
+IMPORTS: mosref/listener, mosref/node, mosref/shell
+EXPORTS: (node-make-sin (<console-node> node) portno)
+         (node-sin-listen (<console-node> node) portno sin)
+         (spawn-drone-listener node next)
+
+mosref/cmd/exploit
+^^^^^^^^^^^^^^^^^^
+IMPORTS: mosref/shell
+EXPORTS: 
+
+mosref/cmd/help
+^^^^^^^^^^^^^^^
+IMPORTS: mosref/shell
+EXPORTS: 
+
+mosref/cmd/cp
+^^^^^^^^^^^^^
+IMPORTS: mosref/node, mosref/shell
+EXPORTS: (get-node-file (<drone-node> node) path)
+         (put-node-file (<drone-node> node) path data)
+
+mosref/cmd/recover
+^^^^^^^^^^^^^^^^^^
+IMPORTS: mosref/cmd/drone, mosref/listener, mosref/node, mosref/shell
+EXPORTS: 
+
+mosref/cmd/sh
+^^^^^^^^^^^^^
+IMPORTS: mosref/node, mosref/shell
+EXPORTS: node-shell-prog
+         (spawn-node-shell (<console-node> node) cmd)
+
+mosref/cmd/load
+^^^^^^^^^^^^^^^
+IMPORTS: mosref/cmd/do, mosref/shell
+EXPORTS: 
+
+mosref/cmd/proxy
+^^^^^^^^^^^^^^^^
+IMPORTS: lib/socks-server, lib/tcp-server, mosref/node, mosref/shell
+EXPORTS: (node-tcp-connect (<drone-node> node) addr portno lapse)
+         (spawn-node-proxy node portno secret)
+
+mosref/cmd/do
+^^^^^^^^^^^^^
+IMPORTS: mosref/node, mosref/shell
+EXPORTS: (eval-node-expr (<drone-node> node) expr)
+
+mosref/cmd/with
+^^^^^^^^^^^^^^^
+IMPORTS: mosref/node, mosref/props, mosref/shell
+EXPORTS: 
+
+mosref/cmd/on
+^^^^^^^^^^^^^
+IMPORTS: mosref/shell
+EXPORTS: 
+
+mosref/cmd/exit
+^^^^^^^^^^^^^^^
+IMPORTS: mosref/shell
+EXPORTS: 
+
+mosref/parse
+^^^^^^^^^^^^
+IMPORTS: mosref/format
+EXPORTS: (opt-integer terms for)
+         (opt-term terms)
+         (parse-flag val)
+         (parse-host-spec s)
+         (parse-port s)
+         (parse-port-spec s)
+         (req-node terms for)
+         (req-path current-node terms for)
+         (req-term terms what ...)
+
+mosref/listener
+^^^^^^^^^^^^^^^
+IMPORTS: lib/buffer-input, lib/patch, lib/record
+EXPORTS: (make-mosref-sin portno)
+         (mosref-sin-listen portno sin)
+
+mosref/prop/platform
+^^^^^^^^^^^^^^^^^^^^
+IMPORTS: lib/build, mosref/format, mosref/node, mosref/parse
+EXPORTS: (node-platform node)
+         (set-node-platform! node value)
+
+mosref/prop/address
+^^^^^^^^^^^^^^^^^^^
+IMPORTS: mosref/format, mosref/node, mosref/parse
+EXPORTS: (node-addr node)
+         (set-node-addr! node value)
+
+mosref/prop/online
+^^^^^^^^^^^^^^^^^^
+IMPORTS: mosref/format, mosref/node, mosref/parse
+EXPORTS: (node-online node)
+         (set-node-online! node value)
+
+mosref/prop/port
+^^^^^^^^^^^^^^^^
+IMPORTS: mosref/format, mosref/node, mosref/parse
+EXPORTS: (node-has-port? node)
+         (node-port node)
+         (set-node-port! node value)
+
+mosref/format
+^^^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (format-addr addr)
+         (format-flag flag)
+         (format-ipv4 i)
+         (format-path path)
+         (send-err items ...)
+         (send-line items ...)
+
+mosref/console
+^^^^^^^^^^^^^^
+IMPORTS: lib/bridge, lib/buffer-input, lib/build, lib/crypto-filter, lib/iterate, lib/line-filter, lib/package-filter, lib/s-filter, lib/with-io, mosref/transport
+EXPORTS: (console-affiliation session-private xmit recv)
+         (console-broken bridge)
+         (console-endpoint bridge)
+         (console-repl xmit recv)
+         (make-drone-exe console-addr sin console-portno console-public platform)
+
+mosref/cmds
+^^^^^^^^^^^
+IMPORTS: mosref/cmd/clear, mosref/cmd/cp, mosref/cmd/do, mosref/cmd/drone, mosref/cmd/exit, mosref/cmd/help, mosref/cmd/load, mosref/cmd/nodes, mosref/cmd/on, mosref/cmd/proxy, mosref/cmd/recover, mosref/cmd/set, mosref/cmd/sh, mosref/cmd/with
+EXPORTS: 
+
+bin/wasp
+^^^^^^^^
+IMPORTS: lib/import, lib/repl, lib/with-io
+EXPORTS: (main args ...)
+MODULE:  ./bin/mosref
+IMPORTS: lib/env, lib/iterate, lib/with-io, mosref/cmds, mosref/console, mosref/shell
+EXPORTS: (main args ...)
+         (spawn fn args ...)
+
+bin/install
+^^^^^^^^^^^
+IMPORTS: lib/build, lib/waspc
+EXPORTS: (main args ...)
+
+bin/wasp-vim-syntax
+^^^^^^^^^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (write-vim-syntax path)
+
+bin/waspc
+^^^^^^^^^
+IMPORTS: lib/build
+EXPORTS: (main args ...)
+         usage
+
+bin/waspdoc
+^^^^^^^^^^^
+IMPORTS: waspdoc/check-source, waspdoc/dump-source
+EXPORTS: (main args ...)
+
+core/module
+^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (find-module-file filename)
+         (import key)
+         (imported? key)
+         (load path)
+         (load-mo path)
+         (module key)
+         (preload keys ...)
+         (read-module-source path)
+         waspvm
+
+core/macro
+^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (set-macro! key fn)
+         (waspvm-syntax)
+
+core/file
+^^^^^^^^^
+IMPORTS: 
+EXPORTS: (convert-path path)
+         (path-join items ...)
+         (read-data-file path)
+         (read-lisp-file path)
+         (write-data-file path content)
+         (write-lisp-file path data)
+
+core/config
+^^^^^^^^^^^
+IMPORTS: 
+EXPORTS: (set-site-config! key value)
+         (site-config key)
+         waspvm
+
+core/io
+^^^^^^^
+IMPORTS: 
+EXPORTS: (input (<process> p))
+         (output (<process> q))
+         (print* items ...)
+         (println* items ...)
+         (send message dest)
+         (tcp-connect args ...)
+         (timeout (<integer> ms) (<process> q))
+         timeout-input
+         (wait (<integer> ms))
