@@ -38,7 +38,7 @@ command line history at the REPL:
 ---------------------------
 ~waspvm$ cd mod
 ~waspvm/mod$ rlwrap ../wasp
->> (print "hello")
+>> (print 
 hello:: null
 >> 
 ---------------------------
@@ -73,7 +73,7 @@ An example of generating a 'hello world' program:
 --------------
 ~$ cat >test.ms
 (define (main)
-  (print "hello world!\n"))
+  (print 
 ~$ waspc -exe hello test.ms
 BUILD: test
 BUILD: core/macro
@@ -105,14 +105,17 @@ Modules
 
 lib/eval
 ^^^^^^^^
+----
 IMPORTS: lib/compile, lib/optimize
 EXPORTS: (eval expr)
          (exec block)
          (load path)
          (load-ms path)
+----
 
 lib/clue
 ^^^^^^^^^
+----
 IMPORTS: lib/object
 EXPORTS: (clue-db->list db)
          (clue-db-records clue-db)
@@ -130,9 +133,11 @@ EXPORTS: (clue-db->list db)
          (new-clue-record db parameters)
          (set-clue-record-parameter record key value)
          (set-clue-record-parameters record parameters)
+----
 
 lib/trace
 ^^^^^^^^^
+----
 IMPORTS: lib/filter
 EXPORTS: 
 MODULE:  ./lib/object
@@ -143,9 +148,11 @@ EXPORTS: (class-fields (<tag> class))
          (make-field-accessor class field-name)
          (make-field-modifier class field-name)
          object
+----
 
 lib/compile
 ^^^^^^^^^^^
+----
 IMPORTS: lib/iterate, lib/module, lib/record
 EXPORTS: (compile program)
          (make-branch-symbol root)
@@ -153,14 +160,18 @@ EXPORTS: (compile program)
          (reset-branch-index)
          symbol-starts-withq
          (waspvm-special-forms)
+----
 
 lib/format-filter
 ^^^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/filter
 EXPORTS: 
+----
 
 lib/http-url
 ^^^^^^^^^^^^
+----
 IMPORTS: lib/url
 EXPORTS: <http-url>
          (http-url-arg url arg)
@@ -177,9 +188,11 @@ EXPORTS: <http-url>
          (url-path (<http-url> url))
          (url-query (<http-url> url))
          (url-scheme (<http-url> url))
+----
 
 lib/http-server
 ^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/http-url, lib/tcp-server
 EXPORTS: <http-request>
          (http-request-arg http-request key)
@@ -201,58 +214,76 @@ EXPORTS: <http-request>
          (set-http-request-input! http-request input)
          (spawn-http-server portno http-responder)
          (write-http-response port code reason headers body)
+----
 
 lib/package-filter
 ^^^^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/filter
 EXPORTS: 
+----
 
 lib/module
 ^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (code-dependencies source)
          (code-exports module)
          (code-imports module)
          (core-dependencies)
+----
 
 lib/line-filter
 ^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/filter
 EXPORTS: 
+----
 
 lib/copy-filter
 ^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/filter
 EXPORTS: 
+----
 
 lib/scud
 ^^^^^^^^
+----
 IMPORTS: lib/env, lib/record
 EXPORTS: (scud-print data ...)
          (set-scud-bg color)
          (set-scud-colors bg fg)
          (set-scud-fg color)
+----
 
 lib/eval
 ^^^^^^^^
+----
 IMPORTS: lib/compile, lib/optimize
 EXPORTS: (eval expr)
          (exec block)
          (load path)
          (load-ms path)
+----
 
 lib/spawn-connection
 ^^^^^^^^^^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (spawn-connection func rest ...)
+----
 
 lib/fuzz-filter
 ^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/filter
 EXPORTS: 
+----
 
 lib/test
 ^^^^^^^^
+----
 IMPORTS: lib/iterate
 EXPORTS: (disable-spot-tests)
          (do-r expr fn)
@@ -263,21 +294,27 @@ EXPORTS: (disable-spot-tests)
          (spot-report)
          spot-s
          spot-v
+----
 
 lib/socks-client
 ^^^^^^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (format-socks4-request auth proto addr portno)
          (parse-socks4-response str)
          (tcp-socks4-connect auth socks-addr socks-portno dest-addr dest-portno)
+----
 
 lib/crypto-filter
 ^^^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/filter
 EXPORTS: 
+----
 
 lib/build
 ^^^^^^^^^
+----
 IMPORTS: lib/compile, lib/eval, lib/optimize, lib/waspc
 EXPORTS: (build-dependencies source)
          (build-exe platform main)
@@ -285,9 +322,11 @@ EXPORTS: (build-dependencies source)
          (build-module module)
          (build-modules modules ...)
          (read-platform-stub platform)
+----
 
 lib/url
 ^^^^^^^
+----
 IMPORTS: lib/object
 EXPORTS: (make-url scheme auth path query frag)
          (register-url-parser key parser)
@@ -302,45 +341,59 @@ EXPORTS: (make-url scheme auth path query frag)
          (url-scheme url)
          (url->string url)
          (url? value)
+----
 
 lib/shuffle
 ^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (shuffle x)
          (shuffle/list l)
          (shuffle/vector v)
+----
 
 lib/with-io
 ^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (do-with-input new-input func)
          (do-with-io new-input new-output func)
          (do-with-output new-output func)
+----
 
 lib/tcp-server
 ^^^^^^^^^^^^^^
+----
 IMPORTS: lib/with-io
 EXPORTS: (spawn-tcp-server portno fn rest ...)
+----
 
 lib/filter
 ^^^^^^^^^^
+----
 IMPORTS: lib/iterate
 EXPORTS: (error-on-fail message)
          (input-chain recv filters ...)
          (output-chain xmit filters ...)
+----
 
 lib/s-filter
 ^^^^^^^^^^^^
+----
 IMPORTS: lib/filter, lib/iterate, lib/options
 EXPORTS: 
+----
 
 lib/record
 ^^^^^^^^^^
+----
 IMPORTS: lib/object
 EXPORTS: 
+----
 
 lib/http-client
 ^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/http-url, lib/object, lib/url
 EXPORTS: (http-get url)
          (http-post url mime body)
@@ -354,26 +407,34 @@ EXPORTS: (http-get url)
          (read-http-response channel)
          (send-http-get channel url)
          (send-http-post channel url mime body)
+----
 
 lib/buffer-input
 ^^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/catch
 EXPORTS: (buffer-input source timeout debris)
          (buffer-input/eoc rest ...)
          (error-on-close fn)
+----
 
 lib/collate-filter
 ^^^^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/buffer-input, lib/filter
 EXPORTS: 
+----
 
 lib/catch
 ^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: 
+----
 
 lib/env
 ^^^^^^^
+----
 IMPORTS: lib/iterate
 EXPORTS: env
          (env-is name val)
@@ -386,58 +447,76 @@ EXPORTS: env
          in-winnt
          in-x11
          (locate-cmd name)
+----
 
 lib/socks-server
 ^^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/patch, lib/tcp-server, lib/trace
 EXPORTS: (format-socks4-response granted portno addr)
          (parse-socks4-request str)
          (spawn-socks4-proxy portno auth-fn conn-fn)
+----
 
 lib/checksum-filter
 ^^^^^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/filter
 EXPORTS: 
+----
 
 lib/args-fu
 ^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (args-fu head keys tail terms)
          (head-fu count terms)
          (key-fu keys terms)
          (parse-fu head keys tail terms)
          (tail-fu count terms)
+----
 
 lib/optimize
 ^^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (optimize assembly)
+----
 
 lib/options
 ^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (option options key default)
+----
 
 lib/waspc
 ^^^^^^^^^
+----
 IMPORTS: lib/compile, lib/optimize
 EXPORTS: (waspc module)
+----
 
 lib/patch
 ^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (patch in out)
          (patch2 left right)
          (preface-connection data conn)
          (preface-input data in)
+----
 
 lib/tag-filter
 ^^^^^^^^^^^^^^
+----
 IMPORTS: lib/filter
 EXPORTS: 
+----
 
 lib/bridge
 ^^^^^^^^^^
+----
 IMPORTS: lib/object
 EXPORTS: <bridge>
          (bridge-lanes bridge)
@@ -453,9 +532,11 @@ EXPORTS: <bridge>
          (make-lane bridge)
          (make-reserved-lane bridge)
          (output (<lane> lane))
+----
 
 lib/iterate
 ^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (all fn arg0 argN ...)
          (any fn arg0 argN ...)
@@ -476,54 +557,72 @@ EXPORTS: (all fn arg0 argN ...)
          (list-iter list)
          (map fn arg0 argN ...)
          (repeat value count)
+----
 
 lib/repl
 ^^^^^^^^
+----
 IMPORTS: lib/compile, lib/eval, lib/optimize, lib/trace
 EXPORTS: (repl)
+----
 
 lib/cons-filter
 ^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/filter
 EXPORTS: 
+----
 
 lib/http-file-server
 ^^^^^^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/http-server
 EXPORTS: (offer-http-file server path type data)
          (spawn-http-file-server portno)
          (withdraw-http-file server path)
+----
 
 lib/import
 ^^^^^^^^^^
+----
 IMPORTS: lib/waspc
 EXPORTS: (import path)
+----
 
 waspdoc/c-file
 ^^^^^^^^^^^^^^
+----
 IMPORTS: waspdoc/source
 EXPORTS: (waspdoc-scan-c path)
+----
 
 waspdoc/dump
 ^^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (dump-waspdoc-source src)
          (format-defn (<waspdoc-func-defn> defn))
+----
 
 waspdoc/dump-source
 ^^^^^^^^^^^^^^^^^^^
+----
 IMPORTS: waspdoc/dump, waspdoc/ms-file
 EXPORTS: (dump-module name)
          (dump-source path)
+----
 
 waspdoc/base
 ^^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (set-waspdoc-root! path)
          (waspdoc-root)
+----
 
 waspdoc/source
 ^^^^^^^^^^^^^^
+----
 IMPORTS: lib/object
 EXPORTS: (add-waspdoc-source-export! source defn)
          (list-waspdoc-source-exports source)
@@ -548,15 +647,19 @@ EXPORTS: (add-waspdoc-source-export! source defn)
          (waspdoc-source? value)
          <waspdoc-type-defn>
          (waspdoc-type-defn? value)
+----
 
 waspdoc/ms-file
 ^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/compile, waspdoc/source
 EXPORTS: (waspdoc-ms-path? path)
          (waspdoc-scan-ms path)
+----
 
 waspdoc/check-source
 ^^^^^^^^^^^^^^^^^^^^
+----
 IMPORTS: waspdoc/dump, waspdoc/ms-file, waspdoc/source
 EXPORTS: (check-source)
          (check-source-export defn)
@@ -572,9 +675,11 @@ EXPORTS: (check-source)
          (find-source-files)
          (source-doc-id source)
          wasp-src-dirs
+----
 
 mosref/shell
 ^^^^^^^^^^^^
+----
 IMPORTS: lib/catch, mosref/console, mosref/format, mosref/node, mosref/parse
 EXPORTS: (alert rest ...)
          (bind-mosref-cmd verb usage info impl)
@@ -593,9 +698,11 @@ EXPORTS: (alert rest ...)
          (run-mosref-shell console node)
          (set-mosref-shell-console! mosref-shell console)
          (set-mosref-shell-running! mosref-shell running)
+----
 
 mosref/node
 ^^^^^^^^^^^
+----
 IMPORTS: lib/args-fu, lib/bridge, lib/filter, lib/object, lib/package-filter, lib/with-io, mosref/format
 EXPORTS: (clear-node-prop! node key)
          <console-node>
@@ -627,9 +734,11 @@ EXPORTS: (clear-node-prop! node key)
          (set-node-prop! node key val)
          (spawn-node-program (<drone-node> node) program)
          (validate-prop key src)
+----
 
 mosref/transport
 ^^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/bridge, lib/buffer-input, lib/patch, lib/trace, lib/with-io
 EXPORTS: (decrypt keystr plaintext)
          (encrypt keystr plaintext)
@@ -640,103 +749,134 @@ EXPORTS: (decrypt keystr plaintext)
          (make-mosref-xmit xmit xmit-key xmit-iv)
          (make-private-key)
          (spawn-endpoint endpoint break xmit recv)
+----
 
 mosref/props
 ^^^^^^^^^^^^
+----
 IMPORTS: mosref/prop/address, mosref/prop/online, mosref/prop/platform, mosref/prop/port
 EXPORTS: 
+----
 
 mosref/drone
 ^^^^^^^^^^^^
+----
 IMPORTS: lib/buffer-input, lib/crypto-filter, lib/iterate, lib/package-filter, lib/tag-filter, lib/with-io, mosref/transport
 EXPORTS: (drone-affiliation console-public xmit recv)
          drone-bridge
          (drone-broken bridge)
          (drone-endpoint bridge)
+----
 
 mosref/cmd/set
 ^^^^^^^^^^^^^^
+----
 IMPORTS: mosref/node, mosref/props, mosref/shell
 EXPORTS: (format-property key-val)
          (parse-property key-val)
+----
 
 mosref/cmd/clear
 ^^^^^^^^^^^^^^^^
+----
 IMPORTS: mosref/node, mosref/shell
 EXPORTS: 
+----
 
 mosref/cmd/nodes
 ^^^^^^^^^^^^^^^^
+----
 IMPORTS: mosref/node, mosref/shell
 EXPORTS: 
+----
 
 mosref/cmd/drone
 ^^^^^^^^^^^^^^^^
+----
 IMPORTS: mosref/listener, mosref/node, mosref/shell
 EXPORTS: (node-make-sin (<console-node> node) portno)
          (node-sin-listen (<console-node> node) portno sin)
          (spawn-drone-listener node next)
+----
 
 mosref/cmd/exploit
 ^^^^^^^^^^^^^^^^^^
+----
 IMPORTS: mosref/shell
 EXPORTS: 
+----
 
 mosref/cmd/help
 ^^^^^^^^^^^^^^^
+----
 IMPORTS: mosref/shell
 EXPORTS: 
+----
 
 mosref/cmd/cp
 ^^^^^^^^^^^^^
+----
 IMPORTS: mosref/node, mosref/shell
 EXPORTS: (get-node-file (<drone-node> node) path)
          (put-node-file (<drone-node> node) path data)
+----
 
 mosref/cmd/recover
 ^^^^^^^^^^^^^^^^^^
+----
 IMPORTS: mosref/cmd/drone, mosref/listener, mosref/node, mosref/shell
 EXPORTS: 
+----
 
 mosref/cmd/sh
 ^^^^^^^^^^^^^
+----
 IMPORTS: mosref/node, mosref/shell
 EXPORTS: node-shell-prog
          (spawn-node-shell (<console-node> node) cmd)
+----
 
 mosref/cmd/load
 ^^^^^^^^^^^^^^^
+----
 IMPORTS: mosref/cmd/do, mosref/shell
 EXPORTS: 
+----
 
 mosref/cmd/proxy
 ^^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/socks-server, lib/tcp-server, mosref/node, mosref/shell
 EXPORTS: (node-tcp-connect (<drone-node> node) addr portno lapse)
          (spawn-node-proxy node portno secret)
-
+----
 mosref/cmd/do
 ^^^^^^^^^^^^^
+----
 IMPORTS: mosref/node, mosref/shell
 EXPORTS: (eval-node-expr (<drone-node> node) expr)
-
+----
 mosref/cmd/with
 ^^^^^^^^^^^^^^^
+----
 IMPORTS: mosref/node, mosref/props, mosref/shell
 EXPORTS: 
-
+----
 mosref/cmd/on
 ^^^^^^^^^^^^^
+----
 IMPORTS: mosref/shell
 EXPORTS: 
-
+----
 mosref/cmd/exit
 ^^^^^^^^^^^^^^^
+----
 IMPORTS: mosref/shell
 EXPORTS: 
-
+----
 mosref/parse
 ^^^^^^^^^^^^
+----
 IMPORTS: mosref/format
 EXPORTS: (opt-integer terms for)
          (opt-term terms)
@@ -747,40 +887,46 @@ EXPORTS: (opt-integer terms for)
          (req-node terms for)
          (req-path current-node terms for)
          (req-term terms what ...)
-
+----
 mosref/listener
 ^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/buffer-input, lib/patch, lib/record
 EXPORTS: (make-mosref-sin portno)
          (mosref-sin-listen portno sin)
-
+----
 mosref/prop/platform
 ^^^^^^^^^^^^^^^^^^^^
+----
 IMPORTS: lib/build, mosref/format, mosref/node, mosref/parse
 EXPORTS: (node-platform node)
          (set-node-platform! node value)
-
+----
 mosref/prop/address
 ^^^^^^^^^^^^^^^^^^^
+----
 IMPORTS: mosref/format, mosref/node, mosref/parse
 EXPORTS: (node-addr node)
          (set-node-addr! node value)
-
+----
 mosref/prop/online
 ^^^^^^^^^^^^^^^^^^
+----
 IMPORTS: mosref/format, mosref/node, mosref/parse
 EXPORTS: (node-online node)
          (set-node-online! node value)
-
+----
 mosref/prop/port
 ^^^^^^^^^^^^^^^^
+----
 IMPORTS: mosref/format, mosref/node, mosref/parse
 EXPORTS: (node-has-port? node)
          (node-port node)
          (set-node-port! node value)
-
+----
 mosref/format
 ^^^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (format-addr addr)
          (format-flag flag)
@@ -788,53 +934,61 @@ EXPORTS: (format-addr addr)
          (format-path path)
          (send-err items ...)
          (send-line items ...)
-
+----
 mosref/console
 ^^^^^^^^^^^^^^
+----
 IMPORTS: lib/bridge, lib/buffer-input, lib/build, lib/crypto-filter, lib/iterate, lib/line-filter, lib/package-filter, lib/s-filter, lib/with-io, mosref/transport
 EXPORTS: (console-affiliation session-private xmit recv)
          (console-broken bridge)
          (console-endpoint bridge)
          (console-repl xmit recv)
          (make-drone-exe console-addr sin console-portno console-public platform)
-
+----
 mosref/cmds
 ^^^^^^^^^^^
+----
 IMPORTS: mosref/cmd/clear, mosref/cmd/cp, mosref/cmd/do, mosref/cmd/drone, mosref/cmd/exit, mosref/cmd/help, mosref/cmd/load, mosref/cmd/nodes, mosref/cmd/on, mosref/cmd/proxy, mosref/cmd/recover, mosref/cmd/set, mosref/cmd/sh, mosref/cmd/with
 EXPORTS: 
-
+----
 bin/wasp
 ^^^^^^^^
+----
 IMPORTS: lib/import, lib/repl, lib/with-io
 EXPORTS: (main args ...)
 MODULE:  ./bin/mosref
 IMPORTS: lib/env, lib/iterate, lib/with-io, mosref/cmds, mosref/console, mosref/shell
 EXPORTS: (main args ...)
          (spawn fn args ...)
-
+----
 bin/install
 ^^^^^^^^^^^
+----
 IMPORTS: lib/build, lib/waspc
 EXPORTS: (main args ...)
-
+----
 bin/wasp-vim-syntax
 ^^^^^^^^^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (write-vim-syntax path)
-
+----
 bin/waspc
 ^^^^^^^^^
+----
 IMPORTS: lib/build
 EXPORTS: (main args ...)
          usage
-
+----
 bin/waspdoc
 ^^^^^^^^^^^
+----
 IMPORTS: waspdoc/check-source, waspdoc/dump-source
 EXPORTS: (main args ...)
-
+----
 core/module
 ^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (find-module-file filename)
          (import key)
@@ -845,15 +999,17 @@ EXPORTS: (find-module-file filename)
          (preload keys ...)
          (read-module-source path)
          waspvm
-
+----
 core/macro
 ^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (set-macro! key fn)
          (waspvm-syntax)
-
+----
 core/file
 ^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (convert-path path)
          (path-join items ...)
@@ -861,16 +1017,18 @@ EXPORTS: (convert-path path)
          (read-lisp-file path)
          (write-data-file path content)
          (write-lisp-file path data)
-
+----
 core/config
 ^^^^^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (set-site-config! key value)
          (site-config key)
          waspvm
-
+----
 core/io
 ^^^^^^^
+----
 IMPORTS: 
 EXPORTS: (input (<process> p))
          (output (<process> q))
@@ -881,3 +1039,340 @@ EXPORTS: (input (<process> p))
          (timeout (<integer> ms) (<process> q))
          timeout-input
          (wait (<integer> ms))
+----
+Primitives
+~~~~~~~~~~
+
+channel
+^^^^^^^
+----
+(send-output data)
+(wait-input [input])
+----
+connection
+^^^^^^^^^^
+----
+(make-connection input)
+(connection-input connection)
+(connection-output connection)
+----
+core
+^^^^
+----
+(string->uppercase string)
+(string->lowercase string)
+(string-read-expr! string)
+(exprs->string list)
+(xml-escape string)
+(percent-encode (<string> data) (<string> mask))
+(percent-decode (<string> data))
+(string->byte (<string> data))
+(string->word (<string> data))
+(string->quad (<string> data))
+(string->integer (<string> s))
+(vector->list (<vector> v))
+(list->vector (<list> l))
+(cadr (<pair> p))
+(reverse (<list> l))
+(reverse! (<list> l))
+(caddr (<pair> p))
+(equal? arg0 ...)
+(not x)
+(last-pair (<list> l))
+(last-item (<list> l))
+(list-ref (<list> l) (<integer> n))
+(list-refp (<list> l) (<integer> n))
+(abs (<integer> n))
+(* (<ingeger> n) ...)
+(/ (<ingeger> n) ...)
+(quotient (<integer> n1) (<integer> n2))
+(remainder (<integer> n1) (<integer> n2))
+(number->string (<integer> n))
+(string->symbol (<string> s))
+(symbol->string (<symbol> s))
+(make-vector (<integer> n) [init])
+(list-index item (<list> l))
+(memq item (<list> l))
+(member item (<list> l))
+(exit [(<integer> code)])
+(equal? arg0 ...)
+(eq? arg0 ...)
+(list? obj)
+(integer? obj)
+(cons obj1 obj2)
+(car (<pair> p))
+(cdr (<pair> p))
+(set-car! (<pair> p) obj)
+(set-cdr! (<pair> p) obj)
+(vector ...)
+(vector-ref (<vector> v) (<integer> n))
+(vector-set! (<vector> v) (<integer> n) any)
+(vector-length (<vector> v))
+(string-length (<string> s))
+(substring (<string> s) (<integer> index) (<integer> length))
+(string-head (<string> s) (<integer> length))
+(string-tail (<string> s) (<integer> index))
+(string-ref (<string> s) (<integer> index))
+(string-set! (<string> s) (<integer> index) (<integer> byte))
+(string-fill! (<string> s) (<integer> index) (<integer> length) (<integer> byte))
+(= (<integer> arg0) ...)
+(< (<integer> arg0) ...)
+(> (<integer> arg0) ...)
+(<= (<integer> arg0) ...)
+(>= (<integer> arg0) ...)
+(!= (<integer> arg0) ...)
+(string=? (<string> arg0) ...)
+(length (<list> l))
+(error-key (<error> e))
+(error-info (<error> e))
+(error-context (<error> e))
+map-car
+map-cdr
+thaw
+freeze
+string-append
+assq
+assoc
+getcwd
+chdir
+argv
+argc
+refuse-method
+get-global
+enable-trace
+disable-trace
+make-tc
+tc-clear!
+tc-append!
+tc-next!
+tc-empty?
+tc-add!
+tc-remove!
+tc-prepend!
+tc->list
+string->exprs
+globals
+make-set
+set-add!
+set-remove!
+set-member?
+set->list
+make-dict
+dict->list
+dict-keys
+dict-values
+dict-set?
+dict-set!
+dict-ref
+dict-remove!
+string-find
+string-begins-with?
+strip
+strip-head
+strip-tail
+string-ends-with?
+split-lines
+string-split
+string-replace
+string-split*
+string-join
+function?
+function-name
+make-string
+flush-string
+empty-string?
+string-skip-space!
+string-skip!
+string-read!
+string-append-byte!
+string-read-byte!
+string-read-line!
+string-append-word!
+string-read-word!
+string-append-quad!
+string-read-quad!
+string-alter!
+byte->string
+word->string
+quad->string
+string-prepend!
+append
+append!
+string-append!
+string-erase!
+string-insert!
+copy-string
+----
+crc32
+^^^^^
+----
+crc32
+----
+curve
+^^^^^
+----
+curve25519-public
+curve25519-secret
+----
+error
+^^^^^
+----
+error
+traceback
+re-error
+----
+file
+^^^^
+----
+open-file
+file-len
+read-file
+close-file
+closed-file?
+write-file
+file-skip
+file-pos
+file-seek
+----
+filesystem
+^^^^^^^^^^
+----
+path-mtime
+locate-path
+path-exists?
+dir-path?
+file-path?
+dir-files
+rename-file
+remove-file
+----
+list
+^^^^
+----
+list
+----
+memory
+^^^^^^
+----
+null?
+----
+multimethod
+^^^^^^^^^^^
+----
+make-multimethod
+isa?
+----
+number
+^^^^^^
+----
++
+-
+&
+|
+^
+<<
+>>
+!
+----
+os
+^^
+----
+resolve-ipv4
+conio-size
+conio-goto
+conio-clear
+conio-cls
+tty-size
+start-tcp-connect
+os-connection-input
+os-connection-output
+serve-tcp
+close-service
+scan-io
+conso-set-attr
+reset-console-colors
+set-console-colors
+console-blit
+unbuffer-console
+----
+plugin
+^^^^^^
+----
+load-subsystem
+----
+print
+^^^^^
+----
+print
+format
+----
+procedure
+^^^^^^^^^
+----
+assemble
+----
+process
+^^^^^^^
+----
+spawn
+halt
+current-input
+current-output
+process-input
+process-output
+set-current-input!
+set-current-output!
+set-process-input!
+set-process-output!
+current-process
+dump-actives
+----
+queue
+^^^^^
+----
+make-queue
+queue-input
+queue-output
+----
+regex
+^^^^^
+----
+match-regex
+match-regex*
+make-regex
+string-read-regex!
+----
+salsa
+^^^^^
+----
+make-salsa20-key
+salsa20-encrypt
+salsa20-decrypt
+read-entropy
+random-integer
+read-prng
+----
+shell
+^^^^^
+----
+spawn-command
+run-command
+----
+tag
+^^^
+----
+type-name
+type
+repr
+tag
+make-tag
+tag-info
+cell
+----
+time
+^^^^
+----
+timeout
+cancel-timeout
+pause
+----
