@@ -38,7 +38,7 @@ command line history at the REPL:
 ---------------------------
 ~waspvm$ cd mod
 ~waspvm/mod$ rlwrap ../wasp
->> (print 
+>> (print  "hello")
 hello:: null
 >> 
 ---------------------------
@@ -1126,82 +1126,84 @@ core
 (error-key (<error> e))
 (error-info (<error> e))
 (error-context (<error> e))
-map-car
-map-cdr
-thaw
-freeze
-string-append
-assq
-assoc
-getcwd
-chdir
-argv
-argc
-refuse-method
-get-global
-enable-trace
-disable-trace
-make-tc
-tc-clear!
-tc-append!
-tc-next!
-tc-empty?
-tc-add!
-tc-remove!
-tc-prepend!
-tc->list
-string->exprs
-globals
-make-set
-set-add!
-set-remove!
-set-member?
-set->list
-make-dict
-dict->list
-dict-keys
-dict-values
-dict-set?
-dict-set!
-dict-ref
-dict-remove!
-string-find
-string-begins-with?
-strip
-strip-head
-strip-tail
-string-ends-with?
-split-lines
-string-split
-string-replace
-string-split*
-string-join
-function?
-function-name
-make-string
-flush-string
-empty-string?
-string-skip-space!
-string-skip!
-string-read!
-string-append-byte!
-string-read-byte!
-string-read-line!
-string-append-word!
-string-read-word!
-string-append-quad!
-string-read-quad!
-string-alter!
-byte->string
-word->string
-quad->string
-string-prepend!
-append
-append!
-string-append!
-string-erase!
-string-insert!
-copy-string
+(map-car (<list l))
+  equivalent to (map car l)
+(map-cdr (<list> l))
+  equivalent to (map cdr l)
+(thaw (<string> s))
+(freeze obj)
+(string-append (<string-or-int> s) ...)
+(assq obj (<list> l))
+(assoc obj (<list> l)
+(getcwd)
+(chdir (<string> s))
+(argv [(<integer> index)])
+(argc)
+(refuse-method)
+(get-global (<symbol> s) default)
+(enable-trace)
+(disable-trace)
+(make-tc ...)
+(tc-clear! (<tc> t))
+(tc-append! (<tc t) (<list l))
+(tc-next! (<tc> t))
+(tc-empty? (<tc> t))
+(tc-add! (<tc> t) item ...)
+(tc-remove! (<tc> t) item ...)
+(tc-prepend! (<tc> t) item)
+(tc->list (<tc> t))
+(string->exprs (<string> s))
+(globals)
+(make-set obj ...)
+(set-add! (<set> s) obj ...)
+(set-remove! (<set> s) obj ...)
+(set-member? (<set> s) obj ...)
+(set->list (<set> s))
+(make-dict (<list-of-pairs> l))
+(dict->list (<dict> d))
+(dict-keys (<dict> d))
+(dict-values (<dict> d))
+(dict-set? (<dict> d) key)
+(dict-set! (<dict> d) key value)
+(dict-ref (<dict> d) key alternate)
+(dict-remove! (<dict> d) key)
+(string-find (<string> s) (<string> item))
+(string-begins-with? (<string> s) (<string> item))
+(strip (<string> s))
+(strip-head (<string> s))
+(strip-tail (<string> s))
+(string-ends-with? (<string> s) (<string> item))
+(split-lines (<string> s))
+(string-split (<string> s) (<string> item))
+(string-replace (<string> s) (<string> pattern) (<string> replacement))
+(string-split* (<string> s) (<string> item))
+(string-join (<string> sep) (<string> item) ...)
+(function? obj)
+(function-name (<function> f))
+(make-string [(<integer> capacity)] [(<integer> init)])
+(flush-string (<string> s))
+(empty-string? (<string> s))
+(string-skip-space! (<string> s))
+(string-skip! (<string> s) (<integer> offset))
+(string-read! (<string> s) [(<integer> max)])
+(string-append-byte! (<string> s) (<integer> byte))
+(string-read-byte! (<string> s))
+(string-read-line! (<string> s))
+(string-append-word! (<string> s) (<integer> word))
+(string-read-word! (<string> s))
+(string-append-quad! (<string> s) (<integer> quad))
+(string-read-quad! (<string> s))
+(string-alter! (<string> s) (<integer> offset) (<integer> length) (<string> data))
+(byte->string (<integer> byte))
+(word->string (<integer> word))
+(quad->string (<integer> quad))
+(string-prepend! (<string> s) (<string-or-integer> data))
+(append (<list> l) ...)
+(append! (<list> l) ...)
+(string-append! (<string> s) (<string-or-integer> data))
+(string-erase! (<string> s) (<integer> offset) (<integer> length))
+(string-insert! (<string> s) (<integer> offset) (<string-or-integer> data))
+(copy-string (<string> s))
 ----
 crc32
 ^^^^^
