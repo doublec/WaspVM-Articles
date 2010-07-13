@@ -1208,173 +1208,181 @@ core
 crc32
 ^^^^^
 ----
-crc32
+(crc32 (<string> s))
 ----
 curve
 ^^^^^
 ----
-curve25519-public
-curve25519-secret
+(curve25519-public (<string> private)) => (<string> public)
+(curve25519-secret (<string> private) (<string> public)) => (<string> s)
 ----
 error
 ^^^^^
 ----
-error
-traceback
-re-error
+(error (<string> key) ...)
+(traceback (<error> e) [(<string-or-output> dest)])
+(re-error (<error> e))
 ----
 file
 ^^^^
 ----
-open-file
-file-len
-read-file
-close-file
-closed-file?
-write-file
-file-skip
-file-pos
-file-seek
+(open-file (<string> path) (<string> flags) [(<integer> mode)]) => (<file> result)
+(file-len (<file> f)) => (<integer> r)
+(read-file (<file> f) (<integer> n)) => (<string> s)
+(close-file (<file> f))
+(closed-file? (<file> f)) => (<boolean> r)
+(write-file (<file> f) (<string> data))
+(file-skip (<file> f) (<integer> n)) => (<integer> r)
+(file-pos (<file> f)) => (<integer> r)
+(file-seek (<file> f) (<integer> n)) => (<integer> r)
+*path-sep* => (<string> s)
+*line-sep* => (<string> s)
 ----
 filesystem
 ^^^^^^^^^^
 ----
-path-mtime
-locate-path
-path-exists?
-dir-path?
-file-path?
-dir-files
-rename-file
-remove-file
+(path-mtime (<string> path)) => (<integer> r)
+(locate-path (<string> filename) (<string> path0) ...) => (<string-or-bool> r)
+(path-exists? (<string> path)) => (<boolean> r)
+(dir-path? (<string> path)) => (<boolean> r)
+(file-path? (<string> path)) => (<boolean> r)
+(dir-files (<string> path)) => (<list> r)
+(rename-file (<string> old-path) (<string> new-path))
+(remove-file (<string> path))
 ----
 list
 ^^^^
 ----
-list
+(list item0 ...) => (<list> items)
 ----
 memory
 ^^^^^^
 ----
-null?
+(null? obj) => (<boolean> r)
 ----
 multimethod
 ^^^^^^^^^^^
 ----
-make-multimethod
-isa?
+(make-multimethod (<list-or-true> signature) (<function> pass) (<function> fail)) => (<multimethod>)
+(isa? value type) => (<boolean>)
 ----
 number
 ^^^^^^
 ----
-+
--
-&
-|
-^
-<<
->>
-!
+(+ (<integer> n0) ...) => (<integer>)
+(- (<integer> n0) ...) => (<integer>)
+(& (<integer> n0) ...) => (<integer>)
+(| (<integer> n0) ...) => (<integer>)
+(^ (<integer> n0) ...) => (<integer>)
+(<< (<integer> base) (<integer> offset)) => (<integer>)
+(>> (<integer> base) (<integer> offset)) => (<integer>)
+(! (<integer> base)) => (<integer>)
+*max-int* => (<integer>)
+*max-imm* => (<integer>)
+*min-int* => (<integer>)
+*min-imm* => (<integer>)
 ----
 os
 ^^
 ----
-resolve-ipv4
-conio-size
-conio-goto
-conio-clear
-conio-cls
-tty-size
-start-tcp-connect
-os-connection-input
-os-connection-output
-serve-tcp
-close-service
-scan-io
-conso-set-attr
-reset-console-colors
-set-console-colors
-console-blit
-unbuffer-console
+(resolve-ipv4 (<string> address)) => (<integer>)
+(conio-size) => (<list>)
+(conio-goto (<integer> row) (<integer> col))
+(conio-clear)
+(conio-cls)
+(tty-size tty) => (<list>)
+(start-tcp-connect host service) => (<connection>)
+(os-connection-input (<connection c)) => (<input>)
+(os-connection-output (<connection c)) => (<output>)
+(serve-tcp (<integer> port)) => (<os-service>)
+(close-service (<os-service> s))
+(scan-io)
+(reset-console-colors)
+(set-console-colors (<integer-or-false> fg) (<integer-or-false> bg))
+(console-blit (<string> text) (<string> fg) (<string> bg) [(<integer> offset) (<integer> length)])
+(unbuffer-console)
+*console* => (<connection>)
 ----
 plugin
 ^^^^^^
 ----
-load-subsystem
+(load-subsystem (<string> path) (<string> init))
+*plugin-ext* => (<string>)
 ----
 print
 ^^^^^
 ----
-print
-format
+(print (<string> value))
+(format (<string> value) [(<integer> breadth) (<integer> depth) (<string> buffer))
 ----
 procedure
 ^^^^^^^^^
 ----
-assemble
+(assemble (<list> source)) => (<procedure>)
 ----
 process
 ^^^^^^^
 ----
-spawn
-halt
-current-input
-current-output
-process-input
-process-output
-set-current-input!
-set-current-output!
-set-process-input!
-set-process-output!
-current-process
-dump-actives
+(spawn (<function> f) ...) => (<process>)
+(halt)
+(current-input) => (<input>)
+(current-output) => (<output>)
+(process-input (<process> p)) => (<input>)
+(process-output (<process> p)) => (<output>)
+(set-current-input! (<input> i))
+(set-current-output! (<output> o))
+(set-process-input! (<process> p) (<input> i))
+(set-process-output! (<process> p) (<output> o))
+(current-process) => (<process>)
+(dump-actives)
 ----
 queue
 ^^^^^
 ----
-make-queue
-queue-input
-queue-output
+(make-queue) => (<queue>)
+(queue-input (<queue> q)) => (<queue-input>)
+(queue-output (<queue> q)) => (<queue-output>)
 ----
 regex
 ^^^^^
 ----
-match-regex
-match-regex*
-make-regex
-string-read-regex!
+(match-regex (<regex> r) (<string> text) [(<string> flags)]) => (<tc-or-false>)
+(match-regex* (<regex> r) (<string> text) [(<string> flags)]) => (<pair-or-false>)
+(make-regex (<string> pattern) [(<string>) flags])
+(string-read-regex! (<string> text) (<regex> r) [(<string> flags)]) => (<any>)
 ----
 salsa
 ^^^^^
 ----
-make-salsa20-key
-salsa20-encrypt
-salsa20-decrypt
-read-entropy
-random-integer
-read-prng
+(make-salsa20-key (<string> seed) [(<string> iv)]) => (<salsa20-key>)
+(salsa20-encrypt (<salsa20-key> key) (<string> plaintext) [(<string> iv)]) => (<string>)
+(salsa20-decrypt (<salsa20-key> key) (<string> ciphertext) [(<string> iv)]) => (<string>)
+(read-entropy (<integer> amount)) => (<string>)
+(random-integer (<integer> min) (<integer> max)) => (<integer>)
+(read-prng (<integer> amount)) => (<string>)
 ----
 shell
 ^^^^^
 ----
-spawn-command
-run-command
+(spawn-command (<string> path) [(<list> args) (<list> env)]) => (<connection>)
+(run-command (<string> command)) => (<integer>)
+*environ* => (<list>)
 ----
 tag
 ^^^
 ----
-type-name
-type
-repr
-tag
-make-tag
-tag-info
-cell
+(type-name value) => (<symbol>)
+(type value) => (<cell-or-value>)
+(repr value) => any
+(tag (<cell> c)) => (<tag>)
+(make-tag (<string> name) ...) => (<tag>)
+(tag-info (<tag> t)) => any
+(cell (<tag> t) value) => (<cell>)
 ----
 time
 ^^^^
 ----
-timeout
-cancel-timeout
-pause
+(timeout (<integer> ms) (<input> input)) => (<task>)
+(cancel-timeout (<task> t))
+(pause [(<integer> ms)])
 ----
