@@ -1,43 +1,43 @@
 Wasp Lisp Articles
 ==================
 Chris Double <chris.double@double.co.nz>
-4th July 2010
+2nd January 2011
 
 Building Wasp Lisp
 ------------------
 
-The source for the Wasp Lisp VM is held in a 'bzr' source code
+The source for the Wasp Lisp VM is held in a 'github' source code
 repository. You can get the source with the command:
 
 [source,bash]
 ---------------------
-$ bzr clone lp:waspvm
+$ git clone git://github.com/swdunlop/WaspVM.git
 ---------------------
 
-This retrieves the source into a directory called 'waspvm'. Build by
+This retrieves the source into a directory called 'WaspVM'. Build by
 running 'make':
 
 [source,bash]
 --------------
-$ cd waspvm
-~waspvm$ make
+$ cd WaspVM
+~WaspVM$ make
 --------------
 
 Once built you can run the REPL from the build directory with:
 
 [source,bash]
 ------------------
-~waspvm$ make repl
+~WaspVM$ make repl
 ------------------
 
 Another way to run the REPL is to run the 'wasp' program from the 'mod'
-subdirectory. I recommend using a programing like 'rlwrap' to give
+subdirectory. I recommend using a program like 'rlwrap' to give
 command line history at the REPL:
 
 [source,bash]
 ---------------------------
-~waspvm$ cd mod
-~waspvm/mod$ rlwrap ../wasp
+~WaspVM$ cd mod
+~WaspVM/mod$ rlwrap ../wasp
 >> (print  "hello")
 hello:: null
 >> 
