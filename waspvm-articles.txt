@@ -1030,15 +1030,18 @@ core/io
 ^^^^^^^
 ----
 IMPORTS: 
-EXPORTS: (input (<process> p))
-         (output (<process> q))
+EXPORTS: (input [any]) => <input>
+         (output [any]) => <output>
          (print* items ...)
          (println* items ...)
-         (send message dest)
+         (send message [dest])
          (tcp-connect args ...)
-         (timeout (<integer> ms) (<process> q))
+         (timeout (<integer> ms) [any]) 
          timeout-input
-         (wait (<integer> ms))
+         (wait) => any
+         (wait src) => any
+         (wait (<integer> ms)) => any
+         (wait (<integer> ms) src) => any
 ----
 Primitives
 ~~~~~~~~~~
@@ -1046,7 +1049,7 @@ Primitives
 channel
 ^^^^^^^
 ----
-(send-output data)
+(send-output data [output])
 (wait-input [input])
 ----
 connection
