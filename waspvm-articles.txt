@@ -1,7 +1,7 @@
 Wasp Lisp Articles
 ==================
 Chris Double <chris.double@double.co.nz>
-2nd January 2011
+5 January 2011
 
 Building Wasp Lisp
 ------------------
